@@ -18,11 +18,19 @@ module.exports.test = function(uiTestCtx) {
         .click(config.select.settings)
         .wait('a[href="/settings/circulation"]')
         .click('a[href="/settings/circulation"]')
-        .wait(2222)
         .wait('a[href="/settings/circulation/loan-policies"]')
+        .click('a[href="/settings/circulation/loan-policies"]')
+        .wait('#ModuleContainer > div > div > div a[href*=loan-policies]')
         .then(result => { done() })
+        .catch(done);
+      });
+      it('should open loan policy', done => {
+        nightmare
+        .click('#ModuleContainer > div > div > div a[href*=loan-policies]')
+        .wait('#clickable-edit-item')
+        .then(done)
         .catch(done)
-      })
-    })
-  })
-}
+      });
+    });
+  });
+};
