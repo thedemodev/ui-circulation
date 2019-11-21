@@ -41,7 +41,7 @@ describe('Patron notice editor', () => {
         expect(PatronNoticeForm.showAvailbaleTokensBtn.isPresent).to.be.true;
       });
 
-      describe('Tokens modal', () => {
+      describe.only('Tokens modal', () => {
         beforeEach(async () => {
           await PatronNoticeForm.showAvailbaleTokensBtn.click();
           await PatronNoticeForm.whenModalOpened();
