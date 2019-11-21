@@ -44,6 +44,7 @@ describe('Patron notice editor', () => {
       describe('Tokens modal', () => {
         beforeEach(async () => {
           await PatronNoticeForm.showAvailbaleTokensBtn.click();
+          await PatronNoticeForm.whenModalOpened();
         });
 
         it('should display tokens modal', () => {

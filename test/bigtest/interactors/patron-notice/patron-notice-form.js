@@ -33,6 +33,10 @@ import { AccordionInteractor } from '@folio/stripes-components/lib/Accordion/tes
     return this.when(() => this.templateName.isPresent);
   }
 
+  whenModalOpened() {
+    return this.when(() => this.tokensModal.availbaleTokens.isPresent);
+  }
+
   templateName = new TextFieldInteractor('[data-test-patron-notice-template-name]');
   templateCategory = new SelectInteractor('[data-test-template-category]');
   templateBody = new Interactor('#template-editor');
