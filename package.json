@@ -256,9 +256,9 @@
     "@bigtest/mocha": "^0.5.2",
     "@bigtest/react": "^0.1.2",
     "@folio/eslint-config-stripes": "^4.0.1",
-    "@folio/stripes": "~2.11.2",
-    "@folio/stripes-components": "~5.8.0",
-    "@folio/stripes-core": "git://github.com/folio-org/stripes-core.git#5014a253fcb581c790573d76ca15828f7fa4e835",
+    "@folio/stripes": "~2.12.0",
+    "@folio/stripes-components": "~5.9.0",
+    "@folio/stripes-core": "~3.11.0",
     "babel-eslint": "^9.0.0",
     "babel-polyfill": "^6.26.0",
     "chai": "^4.2.0",
@@ -282,7 +282,12 @@
     "redux-form": "^7.0.3"
   },
   "peerDependencies": {
-    "@folio/stripes": "~2.8.0",
+    "@folio/stripes": "~2.12.0",
     "react": "*"
+  },
+  "resolutions": {
+    "@folio/stripes-core": "git://github.com/folio-org/stripes-core.git#5014a253fcb581c790573d76ca15828f7fa4e835",
+    "@folio/stripes-smart-components": "git://github.com/folio-org/stripes-smart-components.git#9af9667ad7d730114b25942148611e0d3ec16d03",
+    "@folio/stripes-components": "git://github.com/folio-org/stripes-components.git#67da5eb6b0546a2272c4d1ef35960ea0eef4af75"
   }
 }
