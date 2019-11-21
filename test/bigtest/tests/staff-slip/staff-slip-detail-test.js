@@ -19,7 +19,7 @@ describe('StaffSlipDetail', () => {
 
   it('has a staff slip template', () => {
     expect(StaffSlipDetail.containsContent('{{item.barcode}}')).to.be.true;
-  });
+  }).timeout(3000);
 
   describe('preview modal', () => {
     beforeEach(async function () {
