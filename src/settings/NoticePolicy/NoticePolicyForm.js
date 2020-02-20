@@ -5,7 +5,9 @@ import { connect } from 'react-redux';
 import { getFormValues } from 'redux-form';
 import { get } from 'lodash';
 
-import stripesForm from '@folio/stripes/form';
+// import stripesForm from '@folio/stripes/form';
+import stripesFinalForm from '@folio/stripes/final-form';
+
 import { stripesShape } from '@folio/stripes/core';
 import {
   Col,
@@ -73,8 +75,8 @@ class NoticePolicyForm extends React.Component {
   };
 
   saveForm = (noticePolicy) => {
-    const policy = normalize(noticePolicy);
-    this.props.onSave(policy);
+    // const policy = normalize(noticePolicy);
+    // this.props.onSave(policy);
   };
 
   render() {
@@ -104,7 +106,7 @@ class NoticePolicyForm extends React.Component {
       <form
         data-test-notice-policy-form
         noValidate
-        onSubmit={handleSubmit(this.saveForm)}
+        onSubmit={this.props.handleSubmit}
       >
         <Paneset isRoot>
           <Pane
@@ -131,7 +133,7 @@ class NoticePolicyForm extends React.Component {
               onToggle={this.handleSectionToggle}
               isPolicyActive={policy.active}
             />
-            <LoanNoticesSection
+            { /* <LoanNoticesSection
               isOpen={sections.loanNotices}
               policy={policy}
               templates={getTemplates(patronNoticeTemplates, 'Loan')}
@@ -146,7 +148,7 @@ class NoticePolicyForm extends React.Component {
             <FeeFineNoticesSection
               isOpen={sections.feeFineNotices}
               onToggle={this.handleSectionToggle}
-            />
+            /> */ }
           </Pane>
         </Paneset>
       </form>
@@ -160,8 +162,8 @@ const mapStateToProps = (state) => ({
 
 const connectedLoanPolicyForm = connect(mapStateToProps)(NoticePolicyForm);
 
-export default stripesForm({
-  form: 'noticePolicyForm',
+export default stripesFinalForm({
+  // form: 'noticePolicyForm',
   navigationCheck: true,
-  enableReinitialize: false,
+  // enableReinitialize: false,
 })(connectedLoanPolicyForm);

@@ -18,6 +18,8 @@ import NoticePolicyForm from './NoticePolicyForm';
 import { NoticePolicy } from '../Models/NoticePolicy';
 import { NoticePolicy as validateNoticePolicy } from '../Validation';
 
+import normalize from './utils/normalize';
+
 class NoticePolicySettings extends React.Component {
   static manifest = Object.freeze({
     patronNoticePolicies: {
@@ -109,6 +111,7 @@ class NoticePolicySettings extends React.Component {
           label: <FormattedMessage id="ui-circulation.settings.noticePolicy.denyDelete.header" />,
           message: <FormattedMessage id="ui-circulation.settings.noticePolicy.denyDelete.body" />,
         }}
+        normalizeBeforeSave={normalize}
       />
     );
   }
