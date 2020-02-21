@@ -1,14 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
-import { connect } from 'react-redux';
-import { getFormValues } from 'redux-form';
 import { get } from 'lodash';
+import { useFormState } from 'react-final-form';
 
-// import stripesForm from '@folio/stripes/form';
 import stripesFinalForm from '@folio/stripes/final-form';
-
-import { stripesShape } from '@folio/stripes/core';
 import {
   Col,
   Row,
@@ -17,9 +13,7 @@ import {
   ExpandAllButton,
 } from '@folio/stripes/components';
 
-import normalize from './utils/normalize';
 import getTemplates from './utils/get-templates';
-import { NoticePolicy } from '../Models/NoticePolicy';
 import {
   FooterPane,
   CancelButton,
@@ -31,139 +25,113 @@ import {
   RequestNoticesSection,
 } from './components';
 
-class NoticePolicyForm extends React.Component {
-  static propTypes = {
-    stripes: stripesShape.isRequired,
-    policy: PropTypes.object,
-    pristine: PropTypes.bool.isRequired,
-    submitting: PropTypes.bool.isRequired,
-    parentResources: PropTypes.shape({
-      templates: PropTypes.object,
-    }).isRequired,
-    onSave: PropTypes.func.isRequired,
-    onCancel: PropTypes.func.isRequired,
-    handleSubmit: PropTypes.func.isRequired,
-  };
+import { NoticePolicy as validateNoticePolicy } from '../Validation';
 
-  static defaultProps = {
-    policy: {},
-  };
+const NoticePolicyForm = props => {
+  const [state, setState] = useState({
+    sections: {
+      general: true,
+      loanNotices: true,
+      requestNotices: true,
+      feeFineNotices: false,
+    }
+  });
 
-  constructor(props) {
-    super(props);
+  const { values: policy } = useFormState();
 
-    this.state = {
-      sections: {
-        general: true,
-        loanNotices: true,
-        requestNotices: true,
-        feeFineNotices: false,
-      },
-    };
-  }
-
-  handleSectionToggle = ({ id }) => {
-    this.setState((state) => {
-      const sections = { ...state.sections };
+  const handleSectionToggle = ({ id }) => {
+    setState((prevState) => {
+      const sections = { ...prevState.sections };
       sections[id] = !sections[id];
       return { sections };
     });
   };
 
-  handleExpandAll = (sections) => {
-    this.setState({ sections });
+  const handleExpandAll = (sections) => {
+    setState({ sections });
   };
 
-  saveForm = (noticePolicy) => {
-    // const policy = normalize(noticePolicy);
-    // this.props.onSave(policy);
+  const {
+    pristine,
+    submitting,
+    handleSubmit,
+    onCancel,
+  } = props;
+
+  const patronNoticeTemplates = get(props, 'parentResources.templates.records', []);
+  const panelTitle = policy.id
+    ? policy.name
+    : <FormattedMessage id="ui-circulation.settings.noticePolicy.createEntryLabel" />;
+
+  const footerPaneProps = {
+    pristine,
+    submitting,
+    onCancel,
   };
 
-  render() {
-    const {
-      policy,
-      stripes,
-      pristine,
-      submitting,
-      handleSubmit,
-      onCancel,
-    } = this.props;
+  const { sections } = state;
 
-    const { sections } = this.state;
+  return (
+    <form
+      data-test-notice-policy-form
+      noValidate
+      onSubmit={handleSubmit}
+    >
+      <Paneset isRoot>
+        <Pane
+          defaultWidth="100%"
+          paneTitle={panelTitle}
+          firstMenu={<CancelButton onCancel={onCancel} />}
+          footer={<FooterPane {...footerPaneProps} />}
+        >
+          <Row end="xs">
+            <Col
+              data-test-expand-all
+              xs
+            >
+              <ExpandAllButton
+                accordionStatus={sections}
+                onToggle={handleExpandAll}
+              />
+            </Col>
+          </Row>
+          <GeneralSection
+            isOpen={sections.general}
+            onToggle={handleSectionToggle}
+          />
+          <LoanNoticesSection
+            isOpen={sections.loanNotices}
+            policy={policy}
+            templates={getTemplates(patronNoticeTemplates, 'Loan')}
+            onToggle={handleSectionToggle}
+          />
+          <RequestNoticesSection
+            isOpen={sections.requestNotices}
+            policy={policy}
+            templates={getTemplates(patronNoticeTemplates, 'Request')}
+            onToggle={handleSectionToggle}
+          />
+          <FeeFineNoticesSection
+            isOpen={sections.feeFineNotices}
+            onToggle={handleSectionToggle}
+          />
+        </Pane>
+      </Paneset>
+    </form>
+  );
+};
 
-    const patronNoticeTemplates = get(this.props, 'parentResources.templates.records', []);
-    const panelTitle = policy.id
-      ? policy.name
-      : <FormattedMessage id="ui-circulation.settings.noticePolicy.createEntryLabel" />;
-
-    const footerPaneProps = {
-      pristine,
-      submitting,
-      onCancel,
-    };
-
-    return (
-      <form
-        data-test-notice-policy-form
-        noValidate
-        onSubmit={this.props.handleSubmit}
-      >
-        <Paneset isRoot>
-          <Pane
-            defaultWidth="100%"
-            paneTitle={panelTitle}
-            firstMenu={<CancelButton onCancel={onCancel} />}
-            footer={<FooterPane {...footerPaneProps} />}
-          >
-            <Row end="xs">
-              <Col
-                data-test-expand-all
-                xs
-              >
-                <ExpandAllButton
-                  accordionStatus={sections}
-                  onToggle={this.handleExpandAll}
-                />
-              </Col>
-            </Row>
-            <GeneralSection
-              isOpen={sections.general}
-              metadata={policy.metadata}
-              connect={stripes.connect}
-              onToggle={this.handleSectionToggle}
-              isPolicyActive={policy.active}
-            />
-            { /* <LoanNoticesSection
-              isOpen={sections.loanNotices}
-              policy={policy}
-              templates={getTemplates(patronNoticeTemplates, 'Loan')}
-              onToggle={this.handleSectionToggle}
-            />
-            <RequestNoticesSection
-              isOpen={sections.requestNotices}
-              policy={policy}
-              templates={getTemplates(patronNoticeTemplates, 'Request')}
-              onToggle={this.handleSectionToggle}
-            />
-            <FeeFineNoticesSection
-              isOpen={sections.feeFineNotices}
-              onToggle={this.handleSectionToggle}
-            /> */ }
-          </Pane>
-        </Paneset>
-      </form>
-    );
-  }
-}
-
-const mapStateToProps = (state) => ({
-  policy: new NoticePolicy(getFormValues('noticePolicyForm')(state)),
-});
-
-const connectedLoanPolicyForm = connect(mapStateToProps)(NoticePolicyForm);
+NoticePolicyForm.propTypes = {
+  pristine: PropTypes.bool.isRequired,
+  submitting: PropTypes.bool.isRequired,
+  parentResources: PropTypes.shape({
+    templates: PropTypes.object,
+  }).isRequired,
+  onCancel: PropTypes.func.isRequired,
+  handleSubmit: PropTypes.func.isRequired,
+};
 
 export default stripesFinalForm({
-  // form: 'noticePolicyForm',
   navigationCheck: true,
-  // enableReinitialize: false,
-})(connectedLoanPolicyForm);
+  validate: validateNoticePolicy,
+})(NoticePolicyForm);

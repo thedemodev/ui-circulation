@@ -8,9 +8,14 @@ import {
   Row,
 } from '@folio/stripes/components';
 
+import {
+  stripesConnect,
+  stripesShape,
+} from '@folio/stripes-core';
+
 class Metadata extends React.Component {
   static propTypes = {
-    connect: PropTypes.func.isRequired,
+    stripes: stripesShape.isRequired,
     metadata: PropTypes.object,
   };
 
@@ -21,7 +26,7 @@ class Metadata extends React.Component {
   constructor(props) {
     super(props);
 
-    this.cViewMetaData = props.connect(ViewMetaData);
+    this.cViewMetaData = props.stripes.connect(ViewMetaData);
   }
 
   render() {
@@ -41,4 +46,4 @@ class Metadata extends React.Component {
   }
 }
 
-export default Metadata;
+export default stripesConnect(Metadata);

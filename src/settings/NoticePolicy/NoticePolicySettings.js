@@ -16,7 +16,6 @@ import { stripesConnect } from '@folio/stripes/core';
 import NoticePolicyDetail from './NoticePolicyDetail';
 import NoticePolicyForm from './NoticePolicyForm';
 import { NoticePolicy } from '../Models/NoticePolicy';
-import { NoticePolicy as validateNoticePolicy } from '../Validation';
 
 import normalize from './utils/normalize';
 
@@ -103,7 +102,6 @@ class NoticePolicySettings extends React.Component {
         entryFormComponent={NoticePolicyForm}
         paneTitle={<FormattedMessage id="ui-circulation.settings.noticePolicy.paneTitle" />}
         entryLabel={formatMessage({ id: 'ui-circulation.settings.noticePolicy.entryLabel' })}
-        validate={validateNoticePolicy}
         defaultEntry={NoticePolicy.defaultNoticePolicy()}
         isEntryInUse={this.isPolicyInUse}
         prohibitItemDelete={{
