@@ -21,6 +21,7 @@ const FooterPane = (props) => {
       <div className={css.footerContent}>
         <Button
           id="footer-cancel-entity"
+          buttonStyle="default mega"
           marginBottom0
           onClick={onCancel}
         >
@@ -30,7 +31,7 @@ const FooterPane = (props) => {
           id="footer-save-entity"
           type="submit"
           marginBottom0
-          buttonStyle="primary"
+          buttonStyle="primary mega"
           disabled={(pristine || submitting)}
         >
           <FormattedMessage id="ui-circulation.settings.common.saveAndClose" />
