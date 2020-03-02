@@ -63,15 +63,26 @@ const PatronNoticeForm = props => {
     selected: category === id
   }));
 
+  const checkUniqueName = (name) => {
+    const { okapi } = props;
+
+    return fetch(`${okapi.url}/templates?query=(name=="${name}")`,
+      {
+        headers: Object.assign({}, {
+          'X-Okapi-Tenant': okapi.tenant,
+          'X-Okapi-Token': okapi.token,
+          'Content-Type': 'application/json',
+        })
+      }
+    );
+  }
+
   const validate = async (name) => {
     if (name) {
-      const validator = props.uniquenessValidator.nameUniquenessValidator;
-      const query = `(name="${name}")`;
-      validator.reset();
-
       try {
-        const notices = await validator.GET({ params: { query } });
-        const matchedNotice = find(notices, ['name', name]);
+        const resp = await checkUniqueName(name);
+        const notices = await resp.json();
+        const matchedNotice = find(notices?.templates, ['name', name]);
         if (matchedNotice && matchedNotice.id !== props.initialValues.id) {
           return <FormattedMessage id="ui-circulation.settings.patronNotices.errors.nameExists" />;
         }
@@ -232,5 +243,5 @@ export default stripesFinalForm({
   navigationCheck: true,
   validate: validatePatronNoticeTemplate,
   validateOnBlur: true,
-  keepDirtyOnReinitialize: true,
+  keepDirtyOnReinitialize: false,
 })(PatronNoticeForm);
