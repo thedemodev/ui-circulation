@@ -31,38 +31,6 @@ import {
 } from '../components';
 
 import { PatronNoticeTemplate as validatePatronNoticeTemplate } from '../Validation';
-import { useStripes } from '@folio/stripes-core';
-
-/**
- * on-blur validation checks that the name of the patron notice
- * is unique.
- *
- * redux-form requires that the rejected Promises have the form
- * { field: "error message" }
- * hence the eslint-disable-next-line comments since ESLint is picky
- * about the format of rejected promises.
- *
- * @see https://redux-form.com/7.3.0/examples/asyncchangevalidation/
- */
-function asyncValidate(values, dispatch, props) {
-  if (values.name !== undefined) {
-    return new Promise((resolve, reject) => {
-      const uv = props.uniquenessValidator.nameUniquenessValidator;
-      const query = `(name="${values.name}")`;
-      uv.reset();
-      uv.GET({ params: { query } }).then((notices) => {
-        const matchedNotice = find(notices, ['name', values.name]);
-        if (matchedNotice && matchedNotice.id !== values.id) {
-          // eslint-disable-next-line prefer-promise-reject-errors
-          reject({ name: <FormattedMessage id="ui-circulation.settings.patronNotices.errors.nameExists" /> });
-        } else {
-          resolve();
-        }
-      });
-    });
-  }
-  return new Promise(resolve => resolve());
-}
 
 const PatronNoticeForm = props => {
   const [state, setState] = useState({
@@ -95,23 +63,22 @@ const PatronNoticeForm = props => {
     selected: category === id
   }));
 
-  const validate = async name => {
-    let error;
-    const validator = props.uniquenessValidator.nameUniquenessValidator;
-    const query = `(name="${name}")`;
-    validator.reset();
+  const validate = async (name) => {
+    if (name) {
+      const validator = props.uniquenessValidator.nameUniquenessValidator;
+      const query = `(name="${name}")`;
+      validator.reset();
 
-    try {
-      const notices = await validator.GET({ params: { query } });
-      const matchedNotice = find(notices, ['name', name]);
-      if (matchedNotice && matchedNotice.id !== props.initialValues.id) {
-        error = <FormattedMessage id="ui-circulation.settings.patronNotices.errors.nameExists" />;
+      try {
+        const notices = await validator.GET({ params: { query } });
+        const matchedNotice = find(notices, ['name', name]);
+        if (matchedNotice && matchedNotice.id !== props.initialValues.id) {
+          return <FormattedMessage id="ui-circulation.settings.patronNotices.errors.nameExists" />;
+        }
+      } catch (e) {
+        throw new Error(e);
       }
-    } catch (e) {
-      throw new Error(e);
     }
-
-    return error;
   };
 
   return (
@@ -159,6 +126,7 @@ const PatronNoticeForm = props => {
               <Field
                 label={<FormattedMessage id="ui-circulation.settings.patronNotices.notice.active" />}
                 name="active"
+                type="checkbox"
                 id="input-patron-notice-active"
                 component={Checkbox}
                 defaultChecked={isActive}
@@ -253,6 +221,7 @@ PatronNoticeForm.propTypes = {
   onCancel: PropTypes.func.isRequired,
   // onSave: PropTypes.func.isRequired,
   uniquenessValidator: PropTypes.object.isRequired,
+  form: PropTypes.object.isRequired,
 };
 
 PatronNoticeForm.defaultProps = {
@@ -260,10 +229,8 @@ PatronNoticeForm.defaultProps = {
 };
 
 export default stripesFinalForm({
-  // form: 'patronNoticeForm',
   navigationCheck: true,
   validate: validatePatronNoticeTemplate,
-  // enableReinitialize: false,
-  // asyncValidate,
-  // asyncBlurFields: ['name'],
+  validateOnBlur: true,
+  keepDirtyOnReinitialize: true,
 })(PatronNoticeForm);

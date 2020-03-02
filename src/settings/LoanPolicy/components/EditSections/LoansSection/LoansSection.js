@@ -1,7 +1,7 @@
 import { get } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Field } from 'redux-form';
+import { Field } from 'react-final-form';
 import {
   injectIntl,
   intlShape,
@@ -28,10 +28,10 @@ import optionsGenerator from '../../../../utils/options-generator';
 
 class LoansSection extends React.Component {
   static propTypes = {
+    change: PropTypes.func.isRequired,
     intl: intlShape.isRequired,
     policy: PropTypes.object.isRequired,
     schedules: PropTypes.arrayOf(PropTypes.node).isRequired,
-    change: PropTypes.func.isRequired,
   };
 
   constructor(props) {

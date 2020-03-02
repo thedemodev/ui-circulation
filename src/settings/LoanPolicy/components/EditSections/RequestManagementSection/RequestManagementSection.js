@@ -1,7 +1,7 @@
 import React from 'react';
 import { get } from 'lodash';
 import PropTypes from 'prop-types';
-import { Field } from 'redux-form';
+import { Field } from 'react-final-form';
 import {
   injectIntl,
   intlShape,
@@ -45,7 +45,7 @@ class RequestManagementSection extends React.Component {
       change,
     } = this.props;
 
-    if (!policy.loanable) {
+    if (!policy.isLoanable()) {
       return null;
     }
 
