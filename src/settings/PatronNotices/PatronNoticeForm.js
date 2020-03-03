@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Field } from 'react-final-form';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import {
   find,
   sortBy,
+  get,
 } from 'lodash';
 
 import {
@@ -51,16 +52,14 @@ const PatronNoticeForm = props => {
     onCancel,
     pristine,
     submitting,
+    intl: { formatMessage },
+    form: { getFieldState },
   } = props;
-
-  const category = initialValues && initialValues.category;
-  const isActive = initialValues && initialValues.active;
 
   const sortedCategories = sortBy(patronNoticeCategories, ['label']);
   const categoryOptions = sortedCategories.map(({ label, id }) => ({
-    labelTranslationPath: label,
+    label: formatMessage({ id: label }),
     value: id,
-    selected: category === id
   }));
 
   const checkUniqueName = (name) => {
@@ -68,28 +67,31 @@ const PatronNoticeForm = props => {
 
     return fetch(`${okapi.url}/templates?query=(name=="${name}")`,
       {
-        headers: Object.assign({}, {
+        headers: {
           'X-Okapi-Tenant': okapi.tenant,
           'X-Okapi-Token': okapi.token,
           'Content-Type': 'application/json',
-        })
-      }
-    );
-  }
+        }
+      });
+  };
 
   const validate = async (name) => {
+    let error;
+
     if (name) {
       try {
-        const resp = await checkUniqueName(name);
-        const notices = await resp.json();
+        const response = await checkUniqueName(name);
+        const notices = await response.json();
         const matchedNotice = find(notices?.templates, ['name', name]);
         if (matchedNotice && matchedNotice.id !== props.initialValues.id) {
-          return <FormattedMessage id="ui-circulation.settings.patronNotices.errors.nameExists" />;
+          error = <FormattedMessage id="ui-circulation.settings.patronNotices.errors.nameExists" />;
         }
       } catch (e) {
         throw new Error(e);
       }
     }
+
+    return error;
   };
 
   return (
@@ -140,7 +142,6 @@ const PatronNoticeForm = props => {
                 type="checkbox"
                 id="input-patron-notice-active"
                 component={Checkbox}
-                defaultChecked={isActive}
               />
             </Col>
           </Row>
@@ -163,20 +164,9 @@ const PatronNoticeForm = props => {
                   name="category"
                   component={Select}
                   fullWidth
-                >
-                  {categoryOptions.map(({ labelTranslationPath, value, selected }) => (
-                    <FormattedMessage id={labelTranslationPath}>
-                      {translatedLabel => (
-                        <option
-                          value={value}
-                          selected={selected}
-                        >
-                          {translatedLabel}
-                        </option>
-                      )}
-                    </FormattedMessage>
-                  ))}
-                </Field>
+                  dataOptions={categoryOptions}
+                  value={initialValues.category}
+                />
               </div>
             </Col>
           </Row>
@@ -203,6 +193,7 @@ const PatronNoticeForm = props => {
                     required
                     name="localizedTemplates.en.body"
                     id="input-email-template-body"
+                    selectedCategory={get(getFieldState('category'), 'value', '')}
                     component={TemplateEditor}
                     tokens={tokens}
                     tokensList={TokensList}
@@ -226,12 +217,12 @@ const PatronNoticeForm = props => {
 
 PatronNoticeForm.propTypes = {
   initialValues: PropTypes.object,
+  okapi: PropTypes.object.isRequired,
   pristine: PropTypes.bool.isRequired,
   submitting: PropTypes.bool.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
-  // onSave: PropTypes.func.isRequired,
-  uniquenessValidator: PropTypes.object.isRequired,
+  intl: intlShape.isRequired,
   form: PropTypes.object.isRequired,
 };
 
@@ -243,5 +234,4 @@ export default stripesFinalForm({
   navigationCheck: true,
   validate: validatePatronNoticeTemplate,
   validateOnBlur: true,
-  keepDirtyOnReinitialize: false,
-})(PatronNoticeForm);
+})(injectIntl(PatronNoticeForm));

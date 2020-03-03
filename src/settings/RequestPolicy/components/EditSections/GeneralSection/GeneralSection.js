@@ -1,9 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  Field,
-  FieldArray,
-} from 'redux-form';
+import { Field } from 'react-final-form';
+import { FieldArray } from 'react-final-form-arrays';
 import { FormattedMessage } from 'react-intl';
 
 import {
@@ -23,7 +21,7 @@ class GeneralSection extends React.Component {
     isOpen: PropTypes.bool.isRequired,
     onToggle: PropTypes.func.isRequired,
     metadata: PropTypes.object.isRequired,
-    connect: PropTypes.func.isRequired,
+    validateName: PropTypes.func.isRequired,
   };
 
   renderTypes = () => {
@@ -55,8 +53,8 @@ class GeneralSection extends React.Component {
     const {
       isOpen,
       metadata,
-      connect,
       onToggle,
+      validateName
     } = this.props;
 
     return (
@@ -66,30 +64,25 @@ class GeneralSection extends React.Component {
         label={<FormattedMessage id="ui-circulation.settings.requestPolicy.generalInformation" />}
         onToggle={onToggle}
       >
-        <Metadata
-          connect={connect}
-          metadata={metadata}
-        />
+        <Metadata metadata={metadata} />
         <Field
           id="request_policy_name"
           name="name"
           required
           label={<FormattedMessage id="ui-circulation.settings.requestPolicy.policyName" />}
           component={TextField}
+          validate={validateName}
         />
-
         <Field
           id="request_policy_description"
           name="description"
           label={<FormattedMessage id="ui-circulation.settings.requestPolicy.policyDescription" />}
           component={TextArea}
         />
-
         <FieldArray
           name="requestTypes"
           component={this.renderTypes}
         />
-
       </Accordion>
     );
   }

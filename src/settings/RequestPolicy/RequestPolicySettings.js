@@ -11,6 +11,7 @@ import RequestPolicyForm from './RequestPolicyForm';
 import { RequestPolicy as validateRequestPolicy } from '../Validation';
 import RequestPolicy from '../Models/RequestPolicy';
 import { requestPolicyTypes } from '../../constants';
+import normalize from './utils/normalize';
 
 class RequestPolicySettings extends React.Component {
   static manifest = Object.freeze({
@@ -22,13 +23,6 @@ class RequestPolicySettings extends React.Component {
         query: 'cql.allRecords=1',
         limit: '1000',
       },
-    },
-    nameUniquenessValidator: {
-      type: 'okapi',
-      records: 'requestPolicies',
-      accumulate: 'true',
-      path: 'request-policy-storage/request-policies',
-      fetch: false,
     },
     circulationRules: {
       type: 'okapi',
@@ -108,6 +102,7 @@ class RequestPolicySettings extends React.Component {
           label: <FormattedMessage id="ui-circulation.settings.requestPolicy.cannotDelete.label" />,
           message: <FormattedMessage id="ui-circulation.settings.requestPolicy.cannotDelete.message" />,
         }}
+        normalizeBeforeSave={normalize}
       />
     );
   }

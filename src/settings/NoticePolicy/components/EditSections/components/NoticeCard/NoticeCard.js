@@ -285,7 +285,6 @@ class NoticeCard extends React.Component {
                     label={<FormattedMessage id="ui-circulation.settings.noticePolicy.notices.realTime" />}
                     component={Checkbox}
                     type="checkbox"
-                    normalize={v => !!v}
                   />
                 </Col>
               </Row>

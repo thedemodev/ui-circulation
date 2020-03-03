@@ -1,10 +1,8 @@
 import React from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import {
-  Field,
-  FieldArray
-} from 'redux-form';
+import { Field } from 'react-final-form';
+import { FieldArray } from 'react-final-form-arrays';
 import { FormattedMessage } from 'react-intl';
 
 import {
@@ -28,7 +26,7 @@ import {
   TextArea,
   TextField,
 } from '@folio/stripes/components';
-import stripesForm from '@folio/stripes/form';
+import stripesFinalForm from '@folio/stripes/final-form';
 import { ViewMetaData } from '@folio/stripes/smart-components';
 
 import css from './FixedDueDateSchedule.css';
@@ -38,7 +36,6 @@ class FixedDueDateScheduleForm extends React.Component {
     stripes: stripesShape.isRequired,
     initialValues: PropTypes.object,
     handleSubmit: PropTypes.func.isRequired,
-    onSave: PropTypes.func,
     onCancel: PropTypes.func,
     onRemove: PropTypes.func,
     pristine: PropTypes.bool,
@@ -79,10 +76,6 @@ class FixedDueDateScheduleForm extends React.Component {
       newState.sections = sections;
       return newState;
     });
-  }
-
-  saveSet(data) {
-    this.props.onSave(data);
   }
 
   confirmDeleteSet(confirmation) {
@@ -290,7 +283,7 @@ class FixedDueDateScheduleForm extends React.Component {
                             bottom: '0',
                           }}
                           aria-label={ariaLabel}
-                          onClick={() => { f.remove(index); }}
+                          onClick={() => { fields.remove(index); }}
                         >
                           <Icon icon="trash" />
                         </Button>
@@ -323,7 +316,7 @@ class FixedDueDateScheduleForm extends React.Component {
     return (
       <form
         id="form-fixedDueDateSchedule"
-        onSubmit={handleSubmit(this.saveSet)}
+        onSubmit={handleSubmit}
         data-test-fdds-form
       >
         <Paneset isRoot>
@@ -415,8 +408,4 @@ class FixedDueDateScheduleForm extends React.Component {
   }
 }
 
-export default stripesForm({
-  form: 'FixedDueDateScheduleForm',
-  navigationCheck: true,
-  enableReinitialize: false,
-})(FixedDueDateScheduleForm);
+export default stripesFinalForm({ navigationCheck: true })(FixedDueDateScheduleForm);

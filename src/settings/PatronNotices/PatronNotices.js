@@ -17,7 +17,7 @@ import { PatronNoticeTemplate as validatePatronNoticeTemplate } from '../Validat
 
 class PatronNotices extends React.Component {
   static propTypes = {
-    label: PropTypes.string.isRequired,
+    label: PropTypes.node.isRequired,
     resources: PropTypes.shape({
       entries: PropTypes.shape({
         records: PropTypes.arrayOf(PropTypes.object),
@@ -35,9 +35,6 @@ class PatronNotices extends React.Component {
         DELETE: PropTypes.func,
       }),
     }).isRequired,
-    stripes: PropTypes.shape({
-      intl: PropTypes.object.isRequired,
-    }),
   };
 
   static manifest = Object.freeze({
@@ -50,13 +47,6 @@ class PatronNotices extends React.Component {
       },
       recordsRequired: 50,
       perRequest: 50,
-    },
-    nameUniquenessValidator: {
-      type: 'okapi',
-      records: 'templates',
-      accumulate: 'true',
-      path: 'templates',
-      fetch: false,
     },
     patronNoticePolicies: {
       type: 'okapi',
@@ -113,7 +103,6 @@ class PatronNotices extends React.Component {
           post: 'ui-circulation.settings.notice-templates',
           delete: 'ui-circulation.settings.notice-templates',
         }}
-        uniquenessValidator={this.props.mutator}
         enableDetailsActionMenu
         editElement="both"
         validate={validatePatronNoticeTemplate}
