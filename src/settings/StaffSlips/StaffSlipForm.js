@@ -11,8 +11,8 @@ import {
   TextArea
 } from '@folio/stripes/components';
 
-import stripesForm from '@folio/stripes/form';
-import { Field } from 'redux-form';
+import stripesFinalForm from '@folio/stripes/final-form';
+import { Field } from 'react-final-form';
 
 import tokens from './tokens';
 import TokensList from './TokensList';
@@ -40,10 +40,6 @@ class StaffSlipForm extends React.Component {
     initialValues: {},
   };
 
-  onSave = (data) => {
-    this.props.onSave(data);
-  }
-
   render() {
     const {
       stripes,
@@ -69,7 +65,7 @@ class StaffSlipForm extends React.Component {
       <form
         id="form-staff-slip"
         noValidate
-        onSubmit={handleSubmit(this.onSave)}
+        onSubmit={handleSubmit}
       >
         <Paneset isRoot>
           <Pane
@@ -118,8 +114,6 @@ class StaffSlipForm extends React.Component {
   }
 }
 
-export default stripesForm({
-  form: 'staffSlipForm',
+export default stripesFinalForm({
   navigationCheck: true,
-  enableReinitialize: false,
 })(StaffSlipForm);

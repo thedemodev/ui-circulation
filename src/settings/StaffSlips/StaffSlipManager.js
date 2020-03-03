@@ -72,6 +72,7 @@ class StaffSlipManager extends React.Component {
               post: 'ui-circulation.settings.staff-slips.post',
               delete: 'ui-circulation.settings.staff-slips.delete'
             }}
+            enableDetailsActionMenu
           />
         )}
       </FormattedMessage>

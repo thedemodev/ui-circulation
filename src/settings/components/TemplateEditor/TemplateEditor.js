@@ -48,12 +48,13 @@ class TemplateEditor extends React.Component {
     previewModalHeader: PropTypes.node.isRequired,
     printable: PropTypes.bool,
     required: PropTypes.bool,
-    selectedCategory: PropTypes.string.isRequired
+    selectedCategory: PropTypes.string
   };
 
   static defaultProps = {
     printable: false,
     required: false,
+    selectedCategory: '',
   };
 
   constructor(props) {
