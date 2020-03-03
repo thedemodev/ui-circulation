@@ -48,7 +48,6 @@ class FixedDueDateScheduleForm extends React.Component {
     this.handleExpandAll = this.handleExpandAll.bind(this);
     this.handleSectionToggle = this.handleSectionToggle.bind(this);
     this.renderPaneTitle = this.renderPaneTitle.bind(this);
-    this.saveSet = this.saveSet.bind(this);
     this.beginDelete = this.beginDelete.bind(this);
     this.confirmDeleteSet = this.confirmDeleteSet.bind(this);
     this.cViewMetaData = props.stripes.connect(ViewMetaData);
