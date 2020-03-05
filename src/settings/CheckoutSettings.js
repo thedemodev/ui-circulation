@@ -15,7 +15,6 @@ class CheckoutSettings extends React.Component {
   constructor(props) {
     super(props);
     this.configManager = props.stripes.connect(ConfigManager);
-    this.validate = this.validate.bind(this);
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -39,23 +38,28 @@ class CheckoutSettings extends React.Component {
     return { idents, audioAlertsEnabled, checkoutTimeout, checkoutTimeoutDuration };
   }
 
-  validate(values, allthevalues) {
-    const errors = {};
+  normalize = (data) => {
+    const {
+      idents,
+      audioAlertsEnabled,
+      checkoutTimeout,
+      checkoutTimeoutDuration,
+    } = data;
 
-    const isValid = values.idents && values.idents.reduce((valid, v) => (valid || v), false);
-    if (!isValid) {
-      errors.idents = { _error: <FormattedMessage id="ui-circulation.settings.checkout.validate.selectContinue" /> };
-    }
+    const values = idents.reduce((vals, ident, index) => {
+      if (ident) vals.push(patronIdentifierTypes[index].key);
+      return vals;
+    }, []);
 
-    if (!values.checkoutTimeout) {
-      values.checkoutTimeoutDuration = allthevalues.initialValues.checkoutTimeoutDuration;
-    }
-    const checkoutTimeoutDuration = (_.isInteger(+values.checkoutTimeoutDuration) && (+values.checkoutTimeoutDuration > 0));
-    if (!checkoutTimeoutDuration) {
-      errors.checkoutTimeoutDuration = { _error: <FormattedMessage id="ui-circulation.settings.checkout.validate.timeoutDuration" /> };
-    }
-    return errors;
-  }
+    const otherSettings = JSON.stringify({
+      audioAlertsEnabled: audioAlertsEnabled === 'true',
+      prefPatronIdentifier: values.join(','),
+      checkoutTimeout,
+      checkoutTimeoutDuration,
+    });
+
+    return otherSettings;
+  };
 
   render() {
     return (
@@ -64,9 +68,9 @@ class CheckoutSettings extends React.Component {
         moduleName="CHECKOUT"
         configName="other_settings"
         getInitialValues={this.getInitialValues}
-        validate={this.validate}
         configFormComponent={CheckoutSettingsForm}
         stripes={this.props.stripes}
+        onBeforeSave={this.normalize}
       />
     );
   }

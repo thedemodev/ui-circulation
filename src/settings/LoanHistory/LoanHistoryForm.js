@@ -4,15 +4,10 @@ import {
   injectIntl,
   FormattedMessage,
 } from 'react-intl';
-import {
-  Field,
-  FieldArray,
-  getFormValues,
-  arrayRemoveAll,
-  change,
-} from 'redux-form';
+import { Field } from 'react-final-form';
+import { FieldArray } from 'react-final-form-arrays';
 
-import stripesForm from '@folio/stripes/form';
+import stripesFinalForm from '@folio/stripes/final-form';
 import { stripesShape } from '@folio/stripes/core';
 import {
   Button,
@@ -36,13 +31,14 @@ import css from './LoanHistoryForm.css';
 
 class LoanHistoryForm extends Component {
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
+    // dispatch: PropTypes.func.isRequired,
     handleSubmit: PropTypes.func.isRequired,
-    onSubmit: PropTypes.func.isRequired,
+    // onSubmit: PropTypes.func.isRequired,
     pristine: PropTypes.bool,
     submitting: PropTypes.bool,
     label: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-    stripes: stripesShape.isRequired,
+    // stripes: stripesShape.isRequired,
+    form: PropTypes.object.isRequired,
   };
 
   constructor(props) {
@@ -52,7 +48,7 @@ class LoanHistoryForm extends Component {
     this.state = { checked: false };
   }
 
-  onSave = data => {
+  /* onSave = data => {
     const {
       dispatch,
       onSubmit,
@@ -61,7 +57,7 @@ class LoanHistoryForm extends Component {
     const normalizedData = normalize({ data, dispatch });
 
     onSubmit({ loan_history: JSON.stringify(normalizedData) });
-  };
+  }; */
 
   renderFooter = () => {
     const {
@@ -89,12 +85,12 @@ class LoanHistoryForm extends Component {
   // Due to the issue https://github.com/erikras/redux-form/issues/4101
   // the multiple actions should be dispatched instead of single one ('clearFields')
   toggleCheckbox = () => {
-    const { dispatch } = this.props;
+    const { form: { change } } = this.props;
 
-    dispatch(change('loanHistoryForm', 'closingType.feeFine', null));
-    dispatch(change('loanHistoryForm', 'closingType.loanExceptions', []));
-    dispatch(change('loanHistoryForm', 'feeFine', {}));
-    dispatch(arrayRemoveAll('loanHistoryForm', 'loanExceptions'));
+    change('closingType.feeFine', null);
+    change('closingType.loanExceptions', []);
+    change('feeFine', {});
+    // dispatch(arrayRemoveAll('loanHistoryForm', 'loanExceptions'));
 
     this.setState(({ checked }) => ({
       // eslint-disable-next-line react/no-unused-state
@@ -102,26 +98,20 @@ class LoanHistoryForm extends Component {
     }));
   }
 
-  getCurrentValues() {
-    const { store } = this.props.stripes;
-    const state = store.getState();
-
-    return getFormValues('loanHistoryForm')(state) || {};
-  }
-
   render() {
     const {
       handleSubmit,
       label,
+      form: { getState }
     } = this.props;
 
-    const loanHistoryValues = this.getCurrentValues();
+    const { values: loanHistoryValues } = getState();
 
     return (
       <form
         id="loan-history-form"
         className={css.loanHistoryForm}
-        onSubmit={handleSubmit(this.onSave)}
+        onSubmit={handleSubmit}
       >
         <Pane
           defaultWidth="fill"
@@ -156,8 +146,7 @@ class LoanHistoryForm extends Component {
                 name="treatEnabled"
                 component={Checkbox}
                 type="checkbox"
-                onChange={this.toggleCheckbox}
-                normalize={value => !!value}
+                // onChange={this.toggleCheckbox}
               />
             </Col>
           </Row>
@@ -192,9 +181,8 @@ class LoanHistoryForm extends Component {
 }
 
 export default injectIntl(
-  stripesForm({
-    form: 'loanHistoryForm',
+  stripesFinalForm({
     navigationCheck: true,
-    enableReinitialize: true,
+    keepDirtyOnReinitialize: true,
   })(LoanHistoryForm)
 );

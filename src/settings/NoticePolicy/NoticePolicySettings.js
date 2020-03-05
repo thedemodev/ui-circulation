@@ -109,7 +109,7 @@ class NoticePolicySettings extends React.Component {
           label: <FormattedMessage id="ui-circulation.settings.noticePolicy.denyDelete.header" />,
           message: <FormattedMessage id="ui-circulation.settings.noticePolicy.denyDelete.body" />,
         }}
-        normalizeBeforeSave={normalize}
+        onBeforeSave={normalize}
       />
     );
   }

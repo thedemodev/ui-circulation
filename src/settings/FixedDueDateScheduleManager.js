@@ -166,7 +166,6 @@ class FixedDueDateScheduleManager extends React.Component {
             deleteDisabled={this.deleteDisabled}
             deleteDisabledMessage={<FormattedMessage id="ui-circulation.settings.fDDS.deleteDisabled" />}
             defaultEntry={{ schedules: [{}] }}
-            enableDetailsActionMenu
           />
         )}
       </FormattedMessage>

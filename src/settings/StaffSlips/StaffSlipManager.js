@@ -33,21 +33,6 @@ class StaffSlipManager extends React.Component {
     },
   });
 
-  constructor() {
-    super();
-    this.validate = this.validate.bind(this);
-  }
-
-  validate(values) {
-    const errors = {};
-
-    if (!values.name) {
-      errors.name = <FormattedMessage id="ui-circulation.settings.staffSlips.validation.required" />;
-    }
-
-    return errors;
-  }
-
   render() {
     const {
       mutator,
@@ -65,14 +50,12 @@ class StaffSlipManager extends React.Component {
             paneTitle={<FormattedMessage id="ui-circulation.settings.index.staffSlips" />}
             entryLabel={entryLabel}
             entryFormComponent={StaffSlipForm}
-            validate={this.validate}
             nameKey="name"
             permissions={{
               put: 'ui-circulation.settings.staff-slips',
               post: 'ui-circulation.settings.staff-slips.post',
               delete: 'ui-circulation.settings.staff-slips.delete'
             }}
-            enableDetailsActionMenu
           />
         )}
       </FormattedMessage>

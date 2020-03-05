@@ -102,7 +102,7 @@ class RequestPolicySettings extends React.Component {
           label: <FormattedMessage id="ui-circulation.settings.requestPolicy.cannotDelete.label" />,
           message: <FormattedMessage id="ui-circulation.settings.requestPolicy.cannotDelete.message" />,
         }}
-        normalizeBeforeSave={normalize}
+        onBeforeSave={normalize}
       />
     );
   }

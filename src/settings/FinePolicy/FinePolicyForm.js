@@ -1,12 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { getFormValues } from 'redux-form';
-import stripesForm from '@folio/stripes/form';
-import {
-  FormattedMessage,
-  injectIntl,
-} from 'react-intl';
+import stripesFinalForm from '@folio/stripes/final-form';
+import { FormattedMessage } from 'react-intl';
 
 import {
   Accordion,
@@ -30,13 +25,20 @@ import {
   Metadata,
 } from '../components';
 
-import formShape from '../utils/form-shape';
+import { FinePolicy as validateFinePolicy } from '../Validation';
 
 class FinePolicyForm extends React.Component {
-  static propTypes = formShape;
+  static propTypes = {
+    pristine: PropTypes.bool,
+    submitting: PropTypes.bool,
+    initialValues: PropTypes.object,
+    form: PropTypes.object.isRequired,
+    handleSubmit: PropTypes.func.isRequired,
+    onSave: PropTypes.func.isRequired,
+    onCancel: PropTypes.func.isRequired,
+  };;
 
   static defaultProps = {
-    policy: {},
     initialValues: {},
   };
 
@@ -63,31 +65,20 @@ class FinePolicyForm extends React.Component {
     this.setState({ sections });
   };
 
-  saveForm = (finePolicy) => {
-    if ((finePolicy.overdueFine !== undefined && Number(finePolicy.overdueFine.quantity) === 0) ||
-      (finePolicy.overdueFine !== undefined && finePolicy.overdueFine.quantity === '')) {
-      delete finePolicy.overdueFine;
-    }
-    if ((finePolicy.overdueRecallFine !== undefined && Number(finePolicy.overdueRecallFine.quantity) === 0) ||
-      (finePolicy.overdueRecallFine !== undefined && finePolicy.overdueRecallFine.quantity === '')) {
-      delete finePolicy.overdueRecallFine;
-    }
-    this.props.onSave(finePolicy);
-  };
-
   render() {
     const {
       pristine,
-      policy,
       initialValues,
-      stripes,
       submitting,
       handleSubmit,
-      change,
+      form: { change, getState },
       onCancel,
     } = this.props;
 
     const { sections } = this.state;
+
+    const { values } = getState();
+    const policy = new FinePolicy(values);
 
     const panelTitle = policy.id
       ? policy.name
@@ -103,7 +94,7 @@ class FinePolicyForm extends React.Component {
       <form
         noValidate
         data-test-fine-policy-form
-        onSubmit={handleSubmit(this.saveForm)}
+        onSubmit={handleSubmit}
       >
         <Paneset isRoot>
           <Pane
@@ -130,10 +121,7 @@ class FinePolicyForm extends React.Component {
                 open={sections.overdueGeneralSection}
                 onToggle={this.handleSectionToggle}
               >
-                <Metadata
-                  connect={stripes.connect}
-                  metadata={policy.metadata}
-                />
+                <Metadata metadata={policy.metadata} />
                 <OverdueAboutSection />
                 <FinesSection
                   initialValues={initialValues}
@@ -151,15 +139,7 @@ class FinePolicyForm extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => ({
-  policy: new FinePolicy(getFormValues('finePolicyForm')(state)),
-});
-
-
-const connectedFinePolicyForm = connect(mapStateToProps)(injectIntl(FinePolicyForm));
-
-export default stripesForm({
-  form: 'finePolicyForm',
+export default stripesFinalForm({
   navigationCheck: true,
-  enableReinitialize: true,
-})(connectedFinePolicyForm);
+  validate: validateFinePolicy,
+})(FinePolicyForm);

@@ -13,7 +13,7 @@ import { stripesConnect } from '@folio/stripes/core';
 import LostItemFeePolicyDetail from './LostItemFeePolicyDetail';
 import LostItemFeePolicyForm from './LostItemFeePolicyForm';
 import LostItemFeePolicy from '../Models/LostItemFeePolicy';
-import { LostItemFeePolicy as validateLostItemFeePolicy } from '../Validation';
+import { checkInvalid } from './utils/normalize';
 
 class LostItemFeePolicySettings extends React.Component {
   static manifest = Object.freeze({
@@ -90,7 +90,7 @@ class LostItemFeePolicySettings extends React.Component {
         paneTitle={<FormattedMessage id="ui-circulation.settings.lostItemFee.paneTitle" />}
         entryLabel={formatMessage({ id: 'ui-circulation.settings.lostItemFee.entryLabel' })}
         defaultEntry={LostItemFeePolicy.defaultLostItemFeePolicy()}
-        validate={validateLostItemFeePolicy}
+        onBeforeSave={checkInvalid}
       />
     );
   }

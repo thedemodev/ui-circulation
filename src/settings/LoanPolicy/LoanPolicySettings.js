@@ -87,7 +87,7 @@ class LoanPolicySettings extends React.Component {
         paneTitle={<FormattedMessage id="ui-circulation.settings.loanPolicy.paneTitle" />}
         entryLabel={formatMessage({ id: 'ui-circulation.settings.loanPolicy.entryLabel' })}
         defaultEntry={LoanPolicy.defaultLoanPolicy()}
-        normalizeBeforeSave={normalize}
+        onBeforeSave={normalize}
       />
     );
   }
