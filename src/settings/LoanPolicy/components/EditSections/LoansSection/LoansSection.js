@@ -87,7 +87,6 @@ class LoansSection extends React.Component {
             name="loanable"
             component={Checkbox}
             type="checkbox"
-            normalize={v => !!v}
           />
         </div>
         { policy.isLoanable() &&

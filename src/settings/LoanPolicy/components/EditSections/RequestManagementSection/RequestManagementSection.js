@@ -101,7 +101,6 @@ class RequestManagementSection extends React.Component {
               id="requestManagement.holds.renewItemsWithRequest"
               component={Checkbox}
               type="checkbox"
-              normalize={v => !!v}
             />
           </div>
           <br />
