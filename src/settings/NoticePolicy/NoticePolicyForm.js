@@ -134,8 +134,7 @@ NoticePolicyForm.propTypes = {
 export default stripesFinalForm({
   navigationCheck: true,
   validate: validateNoticePolicy,
-})(NoticePolicyForm);
-*/
+})(NoticePolicyForm); */
 
 import React from 'react';
 import PropTypes from 'prop-types';

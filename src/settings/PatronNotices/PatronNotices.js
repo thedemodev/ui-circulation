@@ -17,7 +17,6 @@ import { PatronNoticeTemplate as validatePatronNoticeTemplate } from '../Validat
 
 class PatronNotices extends React.Component {
   static propTypes = {
-    label: PropTypes.node.isRequired,
     resources: PropTypes.shape({
       entries: PropTypes.shape({
         records: PropTypes.arrayOf(PropTypes.object),
@@ -83,36 +82,40 @@ class PatronNotices extends React.Component {
     const [{ id: defaultCategory }] = sortBy(patronNoticeCategories, ['label']);
 
     return (
-      <EntryManager
-        {...this.props}
-        parentMutator={this.props.mutator}
-        entryList={sortBy((this.props.resources.entries || {}).records || [], ['name'])}
-        detailComponent={PatronNoticeDetail}
-        paneTitle={this.props.label}
-        entryLabel={this.props.label}
-        entryFormComponent={PatronNoticeForm}
-        defaultEntry={{
-          active: true,
-          outputFormats: ['text/html'],
-          templateResolver: 'mustache',
-          category: defaultCategory,
-        }}
-        nameKey="name"
-        permissions={{
-          put: 'ui-circulation.settings.notice-templates',
-          post: 'ui-circulation.settings.notice-templates',
-          delete: 'ui-circulation.settings.notice-templates',
-        }}
-        enableDetailsActionMenu
-        editElement="both"
-        validate={validatePatronNoticeTemplate}
-        isEntryInUse={this.isTemplateInUse}
-        prohibitItemDelete={{
-          close: <FormattedMessage id="ui-circulation.settings.common.close" />,
-          label: <FormattedMessage id="ui-circulation.settings.patronNotices.denyDelete.header" />,
-          message: <FormattedMessage id="ui-circulation.settings.patronNotices.denyDelete.body" />,
-        }}
-      />
+      <FormattedMessage id="ui-circulation.settings.index.patronNotices">
+        { label => (
+          <EntryManager
+            {...this.props}
+            parentMutator={this.props.mutator}
+            entryList={sortBy((this.props.resources.entries || {}).records || [], ['name'])}
+            detailComponent={PatronNoticeDetail}
+            paneTitle={label}
+            entryLabel={label}
+            entryFormComponent={PatronNoticeForm}
+            defaultEntry={{
+              active: true,
+              outputFormats: ['text/html'],
+              templateResolver: 'mustache',
+              category: defaultCategory,
+            }}
+            nameKey="name"
+            permissions={{
+              put: 'ui-circulation.settings.notice-templates',
+              post: 'ui-circulation.settings.notice-templates',
+              delete: 'ui-circulation.settings.notice-templates',
+            }}
+            enableDetailsActionMenu
+            editElement="both"
+            validate={validatePatronNoticeTemplate}
+            isEntryInUse={this.isTemplateInUse}
+            prohibitItemDelete={{
+              close: <FormattedMessage id="ui-circulation.settings.common.close" />,
+              label: <FormattedMessage id="ui-circulation.settings.patronNotices.denyDelete.header" />,
+              message: <FormattedMessage id="ui-circulation.settings.patronNotices.denyDelete.body" />,
+            }}
+          />
+        )}
+      </FormattedMessage>
     );
   }
 }

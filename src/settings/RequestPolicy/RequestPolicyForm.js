@@ -13,12 +13,13 @@ import {
 } from '@folio/stripes/components';
 
 import { GeneralSection } from './components';
-import RequestPolicy from '../Models/RequestPolicy';
-
 import {
   CancelButton,
   FooterPane,
 } from '../components';
+
+import RequestPolicy from '../Models/RequestPolicy';
+import { RequestPolicy as validateRequestPolicy } from '../Validation'; 
 
 class RequestPolicyForm extends React.Component {
   static propTypes = {
@@ -152,4 +153,5 @@ class RequestPolicyForm extends React.Component {
 export default stripesFinalForm({
   navigationCheck: true,
   validateOnBlur: true,
+  validate: validateRequestPolicy,
 })(RequestPolicyForm);

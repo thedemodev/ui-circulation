@@ -1,5 +1,4 @@
 import React from 'react';
-import _ from 'lodash';
 import { FormattedMessage } from 'react-intl';
 import { stripesShape, withStripes } from '@folio/stripes/core';
 import { ConfigManager } from '@folio/stripes/smart-components';
@@ -17,14 +16,16 @@ class CheckoutSettings extends React.Component {
     this.configManager = props.stripes.connect(ConfigManager);
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  getInitialValues(settings) {
+  getInitialValues = (settings) => {
+    let config;
+
     const value = settings.length === 0 ? '' : settings[0].value;
-    const defaultConfig = { prefPatronIdentifier: '',
+    const defaultConfig = {
+      prefPatronIdentifier: '',
       audioAlertsEnabled: false,
       checkoutTimeout: true,
-      checkoutTimeoutDuration: 3 };
-    let config;
+      checkoutTimeoutDuration: 3,
+    };
 
     try {
       config = { ...defaultConfig, ...JSON.parse(value) };
@@ -55,7 +56,7 @@ class CheckoutSettings extends React.Component {
       audioAlertsEnabled: audioAlertsEnabled === 'true',
       prefPatronIdentifier: values.join(','),
       checkoutTimeout,
-      checkoutTimeoutDuration,
+      checkoutTimeoutDuration: parseInt(checkoutTimeoutDuration, 10),
     });
 
     return otherSettings;

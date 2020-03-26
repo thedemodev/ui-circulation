@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Field } from 'react-final-form';
+import { Field, useFormState } from 'react-final-form';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import {
   find,
   sortBy,
-  get,
 } from 'lodash';
 
 import {
@@ -38,6 +37,8 @@ const PatronNoticeForm = props => {
     accordions: { 'email-template': true }
   });
 
+  const { values: { category } } = useFormState();
+
   const onToggleSection = ({ id }) => {
     setState((prevState) => {
       const accordions = { ...prevState.accordions };
@@ -53,7 +54,6 @@ const PatronNoticeForm = props => {
     pristine,
     submitting,
     intl: { formatMessage },
-    form: { getFieldState },
   } = props;
 
   const sortedCategories = sortBy(patronNoticeCategories, ['label']);
@@ -193,7 +193,7 @@ const PatronNoticeForm = props => {
                     required
                     name="localizedTemplates.en.body"
                     id="input-email-template-body"
-                    selectedCategory={get(getFieldState('category'), 'value', '')}
+                    selectedCategory={category}
                     component={TemplateEditor}
                     tokens={tokens}
                     tokensList={TokensList}
@@ -216,14 +216,13 @@ const PatronNoticeForm = props => {
 };
 
 PatronNoticeForm.propTypes = {
+  intl: intlShape.isRequired,
   initialValues: PropTypes.object,
   okapi: PropTypes.object.isRequired,
   pristine: PropTypes.bool.isRequired,
   submitting: PropTypes.bool.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
-  intl: intlShape.isRequired,
-  form: PropTypes.object.isRequired,
 };
 
 PatronNoticeForm.defaultProps = {

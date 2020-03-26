@@ -24,8 +24,6 @@ import { patronIdentifierTypes } from '../constants';
 import css from './CheckoutSettingsForm.css';
 
 class CheckoutSettingsForm extends Component {
-
-      checkoutTimeoutDuration: parseInt(checkoutTimeoutDuration, 10),
   renderFooter = () => {
     const {
       pristine,
