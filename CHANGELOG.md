@@ -6,6 +6,7 @@
 * Extend fee/fine tokens available for notices. Refs UICIRC-458.
 * Grey out unavailable tokens on patron notice template token modal. Refs UICIRC-459.
 * Use `UNSAFE_` prefix for deprecated React methods. We know, we know. Refs UICIRC-431.
+* Incorrect footer displaying for circulation settings. Refs UICIRC-469.
 
 ## [2.1.0] (IN PROGRESS)
 
